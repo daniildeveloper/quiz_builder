@@ -1,26 +1,25 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import i18next from 'i18next';
-import quiz from './quiz';
+import Vue from 'vue'
+import Vuex from 'vuex'
+import quiz from './quiz'
+import user from './user'
+import createPersistedState from 'vuex-persistedstate'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
-const store = new Vuex.Store({
+export default new Vuex.Store({
   state: {
-    lang: 'ru',
+    lang: 'ru'
   },
-  mutations: {
-    setLang(state, lang) {
-      i18next.changeLanguage(lang);
-      state.lang = lang;
-    },
-  },
+  mutations: {},
   modules: {
-    quiz,
+    quiz, user
   },
-});
-
-export default store;
+  plugins: [
+    createPersistedState({
+      paths: ['user']
+    })
+  ]
+})
 
 
 
