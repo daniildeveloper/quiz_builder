@@ -1,20 +1,17 @@
-import i18next from 'i18next'
-import numeral from 'numeral'
+import i18next from 'i18next/index.js'
+import numeral from 'numeral/numeral'
 import 'numeral/locales/ru'
-// import moment from 'moment'
-// import 'moment/locale/en-gb'
-// import 'moment/locale/ru'
-import store from '../store'
-// TODO локали для разных языков
-numeral.locale('ru')
+import moment from 'moment'
+import 'moment/locale/en-gb'
+import 'moment/locale/ru'
 
 const init = function ({ translations, lang }) {
-  // numeral.locale(lang)
-  // moment.locale('ru')
-  
+  numeral.locale(lang)
+  moment.locale('ru')
+
   i18next.init({
     resources: translations,
-    preload: ['ru', 'en'],
+    // preload: ['ru', 'en'],
     lng: lang,
     nsSeparator: false,
     keySeparator: false,
@@ -53,7 +50,7 @@ const init = function ({ translations, lang }) {
 
         // Добавляет значок рубля после значения
         if (format === 'rub') {
-          return value + '₽'
+          return value + '<i class="icontvil icontvil-Ruble"></i>'
         }
 
         // Форматирование чисел
@@ -70,30 +67,28 @@ const init = function ({ translations, lang }) {
         // Форматирование дат
         // Для вызова нужно в качестве формата указать соответсвующее значение из http://momentjs.com
         // или "date", тогда значение будет отформатировано по-умолчанию как дата формата "L"
-        // if (value instanceof Date || format === 'date') {
-        //   if (format === 'date') format = 'L'
-        //   return moment(value).format(format)
-        // }
-        // return value
+        if (value instanceof Date || format === 'date') {
+          if (format === 'date') format = 'L'
+          return moment(value).format(format)
+        }
+        return value
       }
     },
     debug: false
   })
 
   i18next.on('languageChanged', function (lng) {
-    // TODO нужные языки в numeral
-    // numeral.locale(lng)
-    // moment.locale(lng)
+    numeral.locale(lng)
+    moment.locale(lng)
   })
 }
 
 export default {
-  install (Vue, { lang, translations }) {
-    init({ translations, lang })
-    i18next.changeLanguage(lang)
+  install: function (Vue, { lang, translations }) {
+    init(translations, lang)
     Vue.prototype.$t = (key, options = {}) => {
-      // Без state здесь не просходит замены при переключении языка
-      options.lng = store.state.lang
+      options.lng = lang
+      i18next.changeLanguage(lang)
       return i18next.t(key, options)
     }
 
@@ -106,4 +101,4 @@ export default {
 
 
 // WEBPACK FOOTER //
-// ./src/plugins/i18next.js
+// ./src/plugins/i18next/index.js
